@@ -69,7 +69,7 @@ def convert_file(config, video_file)
   end
 
   # Move original to backup folder
-  `mv "#{video_file}" "#{config["backup_dir"]}"`
+  `mv "#{video_file}" "#{config["backup_dir"]}"` if config["backup_dir"]
 
   # Move tmp to original
   `mv "#{video_file}.tmp.mkv" "#{video_file.gsub("."+video_file.split(".").last, ".mkv")}"`
