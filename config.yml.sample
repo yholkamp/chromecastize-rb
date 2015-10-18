@@ -1,0 +1,5 @@
+# No trailing slashes
+scan_dirs:
+ - "/v1/downloads/movies"
+run_until: "06:30"
+backup_dir: "/v1/downloads/convert_backup"
