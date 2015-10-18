@@ -3,13 +3,14 @@ require 'yaml'
 config = YAML.load_file('config.yml')
 
 SUPPORTED_VIDEO_CODECS = ["AVC"]
-SUPPORTED_AUDIO_CODECS = ["AAC"]
-DEFAULT_VIDEO = SUPPORTED_VIDEO_CODECS.first
-DEFAULT_AUDIO = SUPPORTED_AUDIO_CODECS.first
-DRY_RUN = true
+SUPPORTED_AUDIO_CODECS = ['AAC' 'MPEG Audio' 'Vorbis' 'Ogg']
+DEFAULT_VIDEO = "h264"
+DEFAULT_AUDIO = "aac"
+DRY_RUN = false
 
 def output_formats(video_file)
   file_info = `mediainfo "#{video_file}"`
+
   current_vcodec = /Video\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
   current_acodec = /Audio\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
 
@@ -44,7 +45,8 @@ def convert_file(config, video_file)
   output_video, output_audio = output_formats(video_file)
   return if output_video.nil?
 
-  command = %{ffmpeg -loglevel error -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -acodec "#{output_audio}" "#{video_file}.tmp.mkv" > ffmpeg_output.log}
+  time = Time.now
+  command = %{ffmpeg -loglevel error -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -acodec "#{output_audio}" -strict -2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
   if DRY_RUN
     puts "Would have executed this command:\n#{command}"
     return
@@ -53,7 +55,7 @@ def convert_file(config, video_file)
   end
 
   if output
-    puts "Converted video file #{video_file}"
+    puts "Converted video file #{video_file} in #{Time.now - time} seconds"
   else
     puts "Failed to convert file #{video_file}"
     `mv ffmpeg_output.log "error.#{video_file.split("/").last}.log"`
@@ -69,10 +71,15 @@ end
 
 
 if ARGV.count > 0
-  puts "Converting #{ARGV.count} files"
+  files = []
   ARGV.each do |priority_file|
-    convert_file(config, priority_file)
+    Dir.glob(priority_file) do |filepath|
+      files << filepath
+    end
   end
+
+  puts "Converting #{files.count} files"
+  files.each {|filepath| convert_file(config, filepath) }
 
   exit
 end
