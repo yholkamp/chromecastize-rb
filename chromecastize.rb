@@ -3,13 +3,19 @@ require 'yaml'
 config = YAML.load_file('config.yml')
 
 SUPPORTED_VIDEO_CODECS = ["AVC"]
-SUPPORTED_AUDIO_CODECS = ['AAC' 'MPEG Audio' 'Vorbis' 'Ogg']
+SUPPORTED_AUDIO_CODECS = ['AAC', 'MPEG Audio', 'Vorbis', 'Ogg']
 DEFAULT_VIDEO = "h264"
 DEFAULT_AUDIO = "aac"
 DRY_RUN = false
 
 def output_formats(video_file)
   file_info = `mediainfo "#{video_file}"`
+  if $?.success?
+    puts "Retrieved mediainfo for video file #{video_file}"
+  else
+    puts "Could not retrieve mediainfo for video file #{video_file}"
+    return nil
+  end
 
   current_vcodec = /Video\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
   current_acodec = /Audio\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
