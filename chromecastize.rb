@@ -52,7 +52,7 @@ def convert_file(config, video_file)
   return if output_video.nil?
 
   time = Time.now
-  command = %{ffmpeg -loglevel error -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -acodec "#{output_audio}" -strict -2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
+  command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -acodec "#{output_audio}" -strict -2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
   if DRY_RUN
     puts "Would have executed this command:\n#{command}"
     return
