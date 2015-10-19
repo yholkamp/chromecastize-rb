@@ -1,11 +1,16 @@
 # Chromecastize-rb
 
-Simple video file conversion script that can be executed from crontab and can be limited to run only within a certain time span.
+Simple video file conversion script that will take a number of folders containing video files and convert these files in to audio and video codecs supported by the Google Chromecast. This script was developed to convert video files so that Plex Media Server will not transcode video files during playback, which not all NAS hardware supports.
+
+Features include:
+
+* Monitors multiple paths for unconverted files.
+* Can be configured to stop converting new files after a certain time using the `run_until` configuration variable. * Creates backup of files that are converted. 
 
 # Requirements
 
-* ruby
-* ffmpeg
+* `ruby`
+* `ffmpeg` (available in path)
 
 
 # Usage
