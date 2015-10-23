@@ -52,8 +52,7 @@ def convert_file(config, video_file)
   return if output_video.nil?
 
   time = Time.now
-  # Consider passing '-ac 2' to force downmixing to 2 channels
-  command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -tune -film -acodec "#{output_audio}" "#{video_file}.tmp.mkv" > ffmpeg_output.log}
+  command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -tune -film -acodec "#{output_audio}" -ac 2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
   if DRY_RUN
     puts "Would have executed this command:\n#{command}"
     return
