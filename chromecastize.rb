@@ -4,8 +4,8 @@ config = YAML.load_file('config.yml')
 
 SUPPORTED_VIDEO_CODECS = ["AVC"]
 SUPPORTED_AUDIO_CODECS = ['AAC', 'MPEG Audio', 'Vorbis', 'Ogg']
-DEFAULT_VIDEO = "h264"
-DEFAULT_AUDIO = "aac"
+DEFAULT_VIDEO = "libx264"
+DEFAULT_AUDIO = "libfdk_aac"
 DRY_RUN = false
 
 def output_formats(video_file)
@@ -52,7 +52,8 @@ def convert_file(config, video_file)
   return if output_video.nil?
 
   time = Time.now
-  command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -acodec "#{output_audio}" -strict -2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
+  # Consider passing '-ac 2' to force downmixing to 2 channels
+  command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -tune -film -acodec "#{output_audio}" "#{video_file}.tmp.mkv" > ffmpeg_output.log}
   if DRY_RUN
     puts "Would have executed this command:\n#{command}"
     return
