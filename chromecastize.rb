@@ -7,6 +7,7 @@ SUPPORTED_AUDIO_CODECS = ['AAC', 'MPEG Audio', 'Vorbis', 'Ogg']
 DEFAULT_VIDEO = "libx264"
 DEFAULT_AUDIO = "libfdk_aac"
 DRY_RUN = false
+run_until = config["run_until"]
 
 def output_formats(video_file)
   file_info = `mediainfo "#{video_file}"`
@@ -78,7 +79,12 @@ end
 
 if ARGV.count > 0
   files = []
-  ARGV.each do |priority_file|
+  ARGV.each_with_index do |priority_file, index|
+    if priority_file == "--until"
+      run_until = ARGV[index+1]
+      puts "Running until #{run_until}"
+      break
+    end
     Dir.glob(priority_file) do |filepath|
       files << filepath
     end
@@ -99,7 +105,7 @@ config["scan_dirs"].map do |target_path|
     puts "Found #{matching_files.count} video files in folder #{path}"
     matching_files.each {|video_file| convert_file(config, video_file)}
 
-    if config["run_until"] && Time.now.strftime("%H:%M") > config["run_until"]
+    if config["run_until"] && Time.now.strftime("%H:%M") > run_until
       puts "Exiting due to lack of time"
       break
     end
