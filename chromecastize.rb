@@ -49,9 +49,10 @@ def output_formats(video_file)
 end
 
 def convert_file(config, video_file)
-  output_video, output_audio = output_formats(video_file)
-  return if output_video.nil?
-
+  output_fmts = output_formats(video_file)
+  return if output_fmts.nil?
+  output_video, output_audio = output_fmts
+  
   time = Time.now
   command = %{ffmpeg -loglevel error -y -stats -i "#{video_file}" -map 0 -scodec copy -vcodec "#{output_video}" -tune -film -acodec "#{output_audio}" -ac 2 "#{video_file}.tmp.mkv" > ffmpeg_output.log}
   if DRY_RUN
