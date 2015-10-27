@@ -18,8 +18,8 @@ def output_formats(video_file)
     return nil
   end
 
-  current_vcodec = /Video\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
-  current_acodec = /Audio\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
+  current_vcodec = /Video(?: \#1)?\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
+  current_acodec = /Audio(?: \#1)?\n.+\nFormat\s+:\s(\w+)/.match(file_info)[1]
 
   video_supported = SUPPORTED_VIDEO_CODECS.include?(current_vcodec)
   audio_supported = SUPPORTED_AUDIO_CODECS.include?(current_acodec)
